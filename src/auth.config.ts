@@ -10,8 +10,9 @@ export const authConfig = {
     // Lightweight optimistic auth check for the proxy (Edge).
     authorized({ auth, request }) {
       const isLoggedIn = !!auth?.user
-      const isOnLogin = request.nextUrl.pathname.startsWith('/login')
-      if (isOnLogin) {
+      const { pathname } = request.nextUrl
+      const isPublic = pathname.startsWith('/login') || pathname.startsWith('/signup')
+      if (isPublic) {
         if (isLoggedIn) return Response.redirect(new URL('/dashboard', request.nextUrl))
         return true
       }

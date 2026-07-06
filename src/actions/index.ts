@@ -5,6 +5,7 @@ import * as stock from '@/server/stock'
 import * as products from '@/server/products'
 import * as categories from '@/server/categories'
 import * as users from '@/server/users'
+import * as signup from '@/server/signup'
 import { Role } from '@prisma/client'
 
 const bump = () => { revalidatePath('/dashboard'); revalidatePath('/products'); revalidatePath('/alerts') }
@@ -32,4 +33,8 @@ export async function createCategoryAction(name: string) {
 }
 export async function createUserAction(input: { name: string; email: string; password: string; role: Role }) {
   const ctx = await requireCtx(); const r = await users.createUser(ctx, input); revalidatePath('/settings'); return r
+}
+// Public — no requireCtx: this is how a brand-new business is created.
+export async function signUpAction(input: signup.SignUpInput) {
+  return signup.signUp(input)
 }

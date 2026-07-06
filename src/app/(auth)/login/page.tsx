@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { LoginForm } from "@/components/LoginForm";
 import { Mark } from "@/components/Logo";
 
@@ -21,8 +22,11 @@ export default function LoginPage() {
           <p className="eyebrow mb-4">Sign in to your store</p>
           <LoginForm />
         </div>
-        <p className="mt-6 text-center text-xs text-faint">
-          Vanorika Inventory · a module of Vanorika One
+        <p className="mt-6 text-center text-sm text-muted">
+          New here?{" "}
+          <Link href="/signup" className="font-medium text-gold hover:underline">
+            Create your store
+          </Link>
         </p>
       </div>
     </div>
