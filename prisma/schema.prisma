@@ -1,0 +1,94 @@
+generator client {
+  provider = "prisma-client-js"
+}
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  OWNER
+  MANAGER
+  CASHIER
+}
+enum MovementType {
+  RECEIVE
+  REMOVE
+  ADJUST
+}
+
+model Business {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  currency  String   @default("USD")
+  createdAt DateTime @default(now())
+  users      User[]
+  categories Category[]
+  products   Product[]
+  movements  StockMovement[]
+}
+
+model User {
+  id           String   @id @default(cuid())
+  businessId   String
+  business     Business @relation(fields: [businessId], references: [id])
+  email        String
+  passwordHash String
+  name         String
+  role         Role     @default(CASHIER)
+  createdAt    DateTime @default(now())
+  movements    StockMovement[]
+  @@unique([businessId, email])
+  @@index([businessId])
+}
+
+model Category {
+  id         String   @id @default(cuid())
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id])
+  name       String
+  products   Product[]
+  @@unique([businessId, name])
+  @@index([businessId])
+}
+
+model Product {
+  id           String   @id @default(cuid())
+  businessId   String
+  business     Business @relation(fields: [businessId], references: [id])
+  name         String
+  sku          String
+  barcode      String?
+  categoryId   String?
+  category     Category? @relation(fields: [categoryId], references: [id])
+  costPrice    Int      // minor units (cents)
+  sellPrice    Int      // minor units (cents)
+  quantity     Int      @default(0)
+  reorderPoint Int      @default(0)
+  supplierName String?
+  imageUrl     String?
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  movements    StockMovement[]
+  @@unique([businessId, sku])
+  @@index([businessId])
+  @@index([businessId, categoryId])
+}
+
+model StockMovement {
+  id            String       @id @default(cuid())
+  businessId    String
+  business      Business     @relation(fields: [businessId], references: [id])
+  productId     String
+  product       Product      @relation(fields: [productId], references: [id])
+  userId        String
+  user          User         @relation(fields: [userId], references: [id])
+  type          MovementType
+  quantityDelta Int          // signed: +receive, -remove, delta for adjust
+  quantityAfter Int
+  note          String?
+  createdAt     DateTime     @default(now())
+  @@index([businessId, productId, createdAt])
+}
