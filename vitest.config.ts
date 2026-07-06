@@ -12,5 +12,6 @@ export default defineConfig({
     setupFiles: ['tests/setup.ts'],
     fileParallelism: false, // RLS tests share one DB; run serially
     testTimeout: 20000,
+    hookTimeout: 30000,
   },
 })

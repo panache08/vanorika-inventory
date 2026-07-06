@@ -1,12 +1,11 @@
 import { adminPrisma } from '@/lib/db'
 
 export async function resetDb() {
-  // adminPrisma bypasses RLS (superuser) for setup/teardown
-  await adminPrisma.stockMovement.deleteMany()
-  await adminPrisma.product.deleteMany()
-  await adminPrisma.category.deleteMany()
-  await adminPrisma.user.deleteMany()
-  await adminPrisma.business.deleteMany()
+  // Single atomic truncate — faster and more reliable than sequential deletes.
+  // adminPrisma is superuser, so TRUNCATE is permitted and RLS doesn't apply.
+  await adminPrisma.$executeRawUnsafe(
+    'TRUNCATE TABLE "StockMovement","Product","Category","User","Business" CASCADE',
+  )
 }
 
 export async function makeBusiness(name: string) {
