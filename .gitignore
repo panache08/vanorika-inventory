@@ -36,9 +36,11 @@ yarn-error.log*
 *.log
 
 # env files (tracked intentionally for local dev: .env, .env.test)
+# .env.example is tracked too — it has no real secrets, it's the template.
 .env*
 !.env
 !.env.test
+!.env.example
 
 # vercel
 .vercel
