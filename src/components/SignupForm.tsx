@@ -21,8 +21,8 @@ export function SignupForm() {
       setError(res.error);
       return;
     }
-    // Auto sign-in with the credentials just created.
-    const login = await signIn("credentials", { email: f.email, password: f.password, redirect: false });
+    // Auto sign-in with the server-normalized email (not the raw typed case).
+    const login = await signIn("credentials", { email: res.data.email, password: f.password, redirect: false });
     setBusy(false);
     if (login?.error) {
       // Account exists but sign-in hiccuped — send them to login.

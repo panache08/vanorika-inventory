@@ -11,7 +11,9 @@ export const authConfig = {
     authorized({ auth, request }) {
       const isLoggedIn = !!auth?.user
       const { pathname } = request.nextUrl
-      const isPublic = pathname.startsWith('/login') || pathname.startsWith('/signup')
+      // Exact match — not startsWith — so a future route like /login-history
+      // can't accidentally become public.
+      const isPublic = pathname === '/login' || pathname === '/signup'
       if (isPublic) {
         if (isLoggedIn) return Response.redirect(new URL('/dashboard', request.nextUrl))
         return true

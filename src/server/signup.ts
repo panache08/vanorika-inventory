@@ -40,23 +40,28 @@ export async function signUp(input: SignUpInput): Promise<Result<{ businessId: s
   if (!parsed.success) return err(parsed.error.issues[0]?.message ?? "Invalid details");
   const { businessName, name, email, password } = parsed.data;
 
-  try {
-    const passwordHash = await hashPassword(password);
-    const slug = `${slugify(businessName)}-${randomBytes(4).toString("hex")}`;
-    const { businessId } = await adminPrisma.$transaction(async (tx) => {
-      const business = await tx.business.create({ data: { name: businessName, slug } });
-      await tx.user.create({
-        data: { businessId: business.id, name, email, passwordHash, role: "OWNER" },
+  const passwordHash = await hashPassword(password);
+  const baseSlug = slugify(businessName);
+
+  // Retry on the (astronomically rare) slug collision with a fresh suffix.
+  for (let attempt = 0; attempt < 4; attempt++) {
+    const slug = `${baseSlug}-${randomBytes(4).toString("hex")}`;
+    try {
+      const businessId = await adminPrisma.$transaction(async (tx) => {
+        const business = await tx.business.create({ data: { name: businessName, slug } });
+        await tx.user.create({ data: { businessId: business.id, name, email, passwordHash, role: "OWNER" } });
+        return business.id;
       });
-      return { businessId: business.id };
-    });
-    return ok({ businessId, email });
-  } catch (e) {
-    if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
-      const target = String(e.meta?.target ?? "");
-      if (target.includes("email")) return err("That email is already registered. Try signing in instead.");
+      return ok({ businessId, email });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
+        const target = String(e.meta?.target ?? "");
+        if (target.includes("email")) return err("That email is already registered. Try signing in instead.");
+        if (target.includes("slug")) continue; // regenerate the suffix and retry
+      }
+      console.error("signUp failed:", e);
+      return err("Could not create your store. Please try again.");
     }
-    console.error("signUp failed:", e);
-    return err("Could not create your store. Please try again.");
   }
+  return err("Could not create your store. Please try again.");
 }
