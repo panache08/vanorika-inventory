@@ -8,5 +8,9 @@ import { authConfig } from '@/auth.config'
 export default NextAuth(authConfig).auth
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|manifest.webmanifest|icons|favicon.ico).*)'],
+  // Protect app routes; never intercept API routes, Next internals, or any
+  // static file (anything with a dot — favicon, icons, OG image, manifest).
+  // Static metadata assets must stay public so the favicon renders on the
+  // login page and social crawlers can fetch the Open Graph card.
+  matcher: ['/((?!api|_next|.*\\..*).*)'],
 }
