@@ -1,9 +1,24 @@
-export function StatCard({ label, value, tone }: { label: string; value: string; tone?: 'warn' | 'danger' }) {
-  const color = tone === 'danger' ? 'text-red-300' : tone === 'warn' ? 'text-amber-300' : 'text-white'
+export function StatCard({
+  label,
+  value,
+  tone = "default",
+}: {
+  label: string;
+  value: string;
+  tone?: "default" | "warn" | "danger" | "in";
+}) {
+  const color =
+    tone === "danger"
+      ? "text-out"
+      : tone === "warn"
+        ? "text-gold"
+        : tone === "in"
+          ? "text-in"
+          : "text-cream";
   return (
-    <div className="rounded-xl bg-white/5 p-4">
-      <p className={`text-2xl font-bold ${color}`}>{value}</p>
-      <p className="text-xs text-white/50">{label}</p>
+    <div className="card p-3.5">
+      <p className={`num text-2xl font-semibold ${color}`}>{value}</p>
+      <p className="eyebrow mt-1">{label}</p>
     </div>
-  )
+  );
 }

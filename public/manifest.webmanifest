@@ -1,12 +1,14 @@
 {
   "name": "Vanorika Inventory",
   "short_name": "Vanorika",
+  "description": "Stock control, in seconds. Add products, record stock, and see what's running low — from your phone.",
   "start_url": "/dashboard",
   "display": "standalone",
-  "background_color": "#0b0b0f",
-  "theme_color": "#0b0b0f",
+  "background_color": "#0c0a09",
+  "theme_color": "#0c0a09",
+  "categories": ["business", "productivity", "shopping"],
   "icons": [
-    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
   ]
 }
