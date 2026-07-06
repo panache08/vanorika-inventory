@@ -1,0 +1,8 @@
+.superpowers/
+.env
+.env.test
+.env*.local
+docs/
+e2e/
+tests/
+playwright.config.ts

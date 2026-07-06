@@ -3,12 +3,15 @@ import Credentials from 'next-auth/providers/credentials'
 import { z } from 'zod'
 import { adminPrisma } from '@/lib/db'
 import { verifyPassword } from '@/lib/password'
+import { authConfig } from '@/auth.config'
 
 const creds = z.object({ email: z.string().email(), password: z.string().min(1) })
 
+// Full (Node-runtime) auth: extends the Edge-safe base config with the
+// Credentials provider, which needs Prisma + bcrypt.
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  ...authConfig,
   session: { strategy: 'jwt' },
-  pages: { signIn: '/login' },
   providers: [
     Credentials({
       credentials: { email: {}, password: {} },
@@ -23,16 +26,4 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
     }),
   ],
-  callbacks: {
-    jwt({ token, user }) {
-      if (user) { token.id = user.id!; token.businessId = user.businessId; token.role = user.role }
-      return token
-    },
-    session({ session, token }) {
-      session.user.id = token.id
-      session.user.businessId = token.businessId
-      session.user.role = token.role
-      return session
-    },
-  },
 })
