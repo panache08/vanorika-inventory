@@ -38,6 +38,7 @@ async function applyMovement(
     const msg = e instanceof Error ? e.message : 'ERROR'
     if (msg === 'NOT_FOUND') return err('Product not found')
     if (msg === 'NEGATIVE') return err('Not enough stock on hand')
+    console.error('applyMovement failed', e)
     return err('Could not update stock')
   }
 }
@@ -76,6 +77,7 @@ export async function adjustStock(ctx: Ctx, productId: string, newCount: number,
   } catch (e) {
     const msg = e instanceof Error ? e.message : 'ERROR'
     if (msg === 'NOT_FOUND') return err('Product not found')
+    console.error('adjustStock failed', e)
     return err('Could not adjust stock')
   }
 }

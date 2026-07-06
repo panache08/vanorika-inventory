@@ -55,7 +55,7 @@ Requires Node.js and Docker Desktop (for local Postgres).
 ### Running the test suites
 
 ```bash
-npm test      # vitest — unit + integration (rls, auth, permissions, stock, products, settings, dashboard)
+npm test      # vitest — unit + integration (rls, auth, permissions, stock, products, settings, dashboard, actions-shape, tenant-isolation)
 npm run e2e   # playwright — full browser E2E of the core inventory loop
 ```
 

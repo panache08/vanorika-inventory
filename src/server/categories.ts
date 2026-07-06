@@ -17,6 +17,7 @@ export async function createCategory(ctx: Ctx, name: string): Promise<Result<{ i
     return ok({ id })
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') return err('Category already exists')
+    console.error('createCategory failed', e)
     return err('Could not create category')
   }
 }

@@ -1,4 +1,4 @@
-import { Prisma, Role } from '@prisma/client'
+import { Prisma, Role, Product } from '@prisma/client'
 import { forTenant } from '@/lib/tenant'
 
 type Ctx = { businessId: string; actor: { id: string; role: Role } }
@@ -36,7 +36,7 @@ export async function getDashboard(ctx: Ctx) {
 
 export async function getAlerts(ctx: Ctx) {
   return forTenant(ctx.businessId, async (tx) => {
-    const low = await tx.$queryRaw<any[]>(
+    const low = await tx.$queryRaw<Product[]>(
       Prisma.sql`SELECT * FROM "Product" WHERE "isActive" = true AND quantity > 0 AND quantity <= "reorderPoint" ORDER BY quantity ASC`,
     )
     const out = await tx.product.findMany({ where: { isActive: true, quantity: 0 }, orderBy: { name: 'asc' } })

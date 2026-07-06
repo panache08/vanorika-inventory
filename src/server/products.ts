@@ -26,6 +26,7 @@ export async function createProduct(ctx: Ctx, input: CreateInput): Promise<Resul
     return ok({ id })
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') return err('SKU already in use')
+    console.error('createProduct failed', e)
     return err('Could not create product')
   }
 }
@@ -42,6 +43,7 @@ export async function updateProduct(ctx: Ctx, id: string, patch: UpdatePatch): P
     return ok({ id })
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') return err('SKU already in use')
+    console.error('updateProduct failed', e)
     return err('Could not update product')
   }
 }

@@ -23,6 +23,7 @@ export async function createUser(
     return ok({ id })
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') return err('Email already in use')
+    console.error('createUser failed', e)
     return err('Could not create user')
   }
 }
