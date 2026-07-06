@@ -19,6 +19,14 @@ async function ctxWithRole(role: 'OWNER' | 'MANAGER') {
 describe('settings backend', () => {
   beforeEach(resetDb)
 
+  it('stores staff email in lowercase so login matches any typed case', async () => {
+    const ctx = await ctxWithRole('OWNER')
+    const res = await createUser(ctx, { name: 'Cash', email: '  Cash@Shop.CO ', password: 'pw123456', role: 'CASHIER' })
+    expect(res.ok).toBe(true)
+    const created = await adminPrisma.user.findFirst({ where: { email: 'cash@shop.co' } })
+    expect(created).toBeTruthy()
+  })
+
   it('owner creates a category and it lists back', async () => {
     const ctx = await ctxWithRole('OWNER')
     const res = await createCategory(ctx, 'Building')

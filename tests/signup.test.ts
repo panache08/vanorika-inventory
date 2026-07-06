@@ -18,6 +18,13 @@ describe("self-serve signup", () => {
     expect(await verifyPassword("supersecret", user!.passwordHash)).toBe(true);
   });
 
+  it("normalizes email to lowercase (so login matches any typed case)", async () => {
+    const res = await signUp({ businessName: "Case Co", name: "C", email: "  Mixed@Case.CO ", password: "password8x" });
+    expect(res.ok).toBe(true);
+    const user = await adminPrisma.user.findFirst({ where: { email: "mixed@case.co" } });
+    expect(user).toBeTruthy();
+  });
+
   it("rejects a duplicate email", async () => {
     await signUp({ businessName: "A", name: "A", email: "dup@shop.co", password: "password8x" });
     const res = await signUp({ businessName: "B", name: "B", email: "dup@shop.co", password: "password8x" });

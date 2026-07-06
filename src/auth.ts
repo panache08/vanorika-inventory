@@ -5,7 +5,9 @@ import { adminPrisma } from '@/lib/db'
 import { verifyPassword } from '@/lib/password'
 import { authConfig } from '@/auth.config'
 
-const creds = z.object({ email: z.string().email(), password: z.string().min(1) })
+// Normalize email to lowercase so login matches how it was stored, regardless
+// of the case the user types.
+const creds = z.object({ email: z.string().trim().toLowerCase().email(), password: z.string().min(1) })
 
 // Full (Node-runtime) auth: extends the Edge-safe base config with the
 // Credentials provider, which needs Prisma + bcrypt.

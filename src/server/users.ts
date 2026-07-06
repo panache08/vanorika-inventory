@@ -16,7 +16,7 @@ export async function createUser(
     const passwordHash = await hashPassword(input.password)
     const id = await forTenant(ctx.businessId, async (tx) => {
       const u = await tx.user.create({
-        data: { businessId: ctx.businessId, name: input.name, email: input.email, role: input.role, passwordHash },
+        data: { businessId: ctx.businessId, name: input.name, email: input.email.trim().toLowerCase(), role: input.role, passwordHash },
       })
       return u.id
     })
