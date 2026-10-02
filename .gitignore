@@ -49,3 +49,7 @@ next-env.d.ts
 .vercel
 
 .superpowers/
+
+# Next.js dev server writes these; keep them out of the repo
+AGENTS.md
+CLAUDE.md
